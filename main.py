@@ -155,12 +155,13 @@ def clear_files(dir, cur_filename):
 
 def clear_dir(dir):
     for fname in os.listdir(dir):
-        try:
-            shutil.rmtree(dir + fname)
-            print(f'Deleted {fname} from {dir}')
-        except Exception as E:
-            print(f'Failed to delete {fname} from {dir}')
-            print(E)
+        if fname != sample_filename.replace('.pdf','')
+            try:
+                shutil.rmtree(dir + fname)
+                print(f'Deleted {fname} from {dir}')
+            except Exception as E:
+                print(f'Failed to delete {fname} from {dir}')
+                print(E)
 
 @callback(Output('output-query', 'children'),
           [Input('query-btn', 'n_clicks'),
