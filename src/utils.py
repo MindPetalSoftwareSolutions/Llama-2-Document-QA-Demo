@@ -20,9 +20,15 @@ with open('config/config.yml', 'r', encoding='utf8') as ymlfile:
     cfg = box.Box(yaml.safe_load(ymlfile))
 
 
-def set_qa_prompt(template: str = 'qa'):
-    """
-    Prompt template for QA retrieval for each vectorstore
+def set_prompt():
+    """ Prompt template for QA retrieval for each vectorstore """
+    template = """Use the following pieces of information to answer the user's question.
+
+    Context: {context}
+    Question: {question}
+
+    Return the answer below and nothing else. The answer should be as brief as possible and omit unnecessary context. 
+    The answer to the question is:
     """
     match template:
         case 'qa': template = prompts.qa_template
