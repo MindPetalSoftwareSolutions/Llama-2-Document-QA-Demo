@@ -6,13 +6,12 @@
 import box
 import yaml
 
+from src.env import device
 from langchain import PromptTemplate
 from langchain.chains import RetrievalQA
 from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.llms import LlamaCpp
 from langchain.vectorstores import FAISS
-import src.prompts as prompts
-from src.llm import build_llm
-
 from multipledispatch import dispatch
 
 # Import config vars
@@ -30,9 +29,6 @@ def set_prompt():
     Return the answer below and nothing else. The answer should be as brief as possible and omit unnecessary context. 
     The answer to the question is:
     """
-    match template:
-        case 'qa': template = prompts.qa_template
-        case 'brief': template = prompts.qa_template
 
     prompt = PromptTemplate(template=template,
                             input_variables=['context', 'question'])
@@ -48,25 +44,13 @@ def build_retrieval_qa(llm, prompt, vectordb):
                                        )
     return dbqa
 
+@dispatch(str, LlamaCpp)
+def setup_dbqa(db_faiss_path, llm):
 
-@dispatch()
-def setup_dbqa():
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2",
-                                       model_kwargs={'device': 'cpu'})
-    vectordb = FAISS.load_local(cfg.DB_FAISS_PATH, embeddings)
-    llm = build_llm()
-    qa_prompt = set_qa_prompt()
-    dbqa = build_retrieval_qa(llm, qa_prompt, vectordb)
-
-    return dbqa
-
-@dispatch(str)
-def setup_dbqa(db_faiss_path):
-    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2",
-                                       model_kwargs={'device': 'cpu'})
+                                       model_kwargs={'device': device})
     vectordb = FAISS.load_local(db_faiss_path, embeddings)
-    llm = build_llm()
-    qa_prompt = set_qa_prompt()
+    qa_prompt = set_prompt()
     dbqa = build_retrieval_qa(llm, qa_prompt, vectordb)
 
     return dbqa
