@@ -155,7 +155,7 @@ def clear_files(dir, cur_filename):
 
 def clear_dir(dir):
     for fname in os.listdir(dir):
-        if fname != sample_filename.replace('.pdf','')
+        if fname != sample_filename.replace('.pdf',''):
             try:
                 shutil.rmtree(dir + fname)
                 print(f'Deleted {fname} from {dir}')
