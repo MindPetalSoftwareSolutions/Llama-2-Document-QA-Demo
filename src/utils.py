@@ -21,12 +21,9 @@ with open('config/config.yml', 'r', encoding='utf8') as ymlfile:
 
 def set_prompt():
     """ Prompt template for QA retrieval for each vectorstore """
-    template = """Use the following pieces of information to answer the user's question.
-
+    template = """
     Context: {context}
     Question: {question}
-
-    Return the answer below and nothing else. The answer should be as brief as possible and omit unnecessary context. 
     The answer to the question is:
     """
 
@@ -50,7 +47,7 @@ def setup_dbqa(db_faiss_path, llm):
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2",
                                        model_kwargs={'device': device})
     vectordb = FAISS.load_local(db_faiss_path, embeddings)
-    qa_prompt = set_prompt()
-    dbqa = build_retrieval_qa(llm, qa_prompt, vectordb)
+    prompt = set_prompt()
+    dbqa = build_retrieval_qa(llm, prompt, vectordb)
 
     return dbqa

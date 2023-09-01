@@ -28,7 +28,9 @@ def build_llm():
         use_mlock=True,
         n_gpu_layers=100,
         n_threads=4,
-        n_batch=256
+        n_batch=256,
+        temperature=cfg.TEMPERATURE,
+        max_tokens=cfg.MAX_NEW_TOKENS
     )
     return llm
 
